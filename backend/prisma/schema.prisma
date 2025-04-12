@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  name      String?
+  phone     String?
+  role      Role      @default(USER)
+  appointments Appointment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Barber {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  phone       String?
+  services    Service[]
+  appointments Appointment[]
+  workingHours WorkingHours[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Service {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  duration    Int       // Duration in minutes
+  price       Float
+  barber      Barber    @relation(fields: [barberId], references: [id])
+  barberId    Int
+  appointments Appointment[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Appointment {
+  id        Int       @id @default(autoincrement())
+  date      DateTime
+  status    AppointmentStatus @default(PENDING)
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  barber    Barber    @relation(fields: [barberId], references: [id])
+  barberId  Int
+  service   Service   @relation(fields: [serviceId], references: [id])
+  serviceId Int
+  timeSlot  TimeSlot?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model WorkingHours {
+  id        Int       @id @default(autoincrement())
+  dayOfWeek Int       // 0-6 (Sunday-Saturday)
+  startTime DateTime  // Store as DateTime but only use time part
+  endTime   DateTime  // Store as DateTime but only use time part
+  barber    Barber    @relation(fields: [barberId], references: [id])
+  barberId  Int
+  timeSlots TimeSlot[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model TimeSlot {
+  id            Int           @id @default(autoincrement())
+  date          DateTime
+  status        TimeSlotStatus @default(EMPTY)
+  workingHours  WorkingHours  @relation(fields: [workingHoursId], references: [id])
+  workingHoursId Int
+  appointment   Appointment?  @relation(fields: [appointmentId], references: [id])
+  appointmentId Int?         @unique
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+  BARBER
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum TimeSlotStatus {
+  EMPTY
+  FULL
+  CLOSED
+}
