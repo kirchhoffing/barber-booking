@@ -1,9 +1,8 @@
 # Barber Booking Frontend
 
-Bu proje, berber randevu sistemi için geliştirilmiş bir React frontend uygulamasıdır.
+## Project Architecture
 
-## Teknolojiler
-
+### Technologies
 - React
 - TypeScript
 - Vite
@@ -12,61 +11,126 @@ Bu proje, berber randevu sistemi için geliştirilmiş bir React frontend uygula
 - Axios
 - React Query
 
-## Kurulum
+### Directory Structure
+```
+frontend/
+├── src/
+│   ├── components/      # Reusable components
+│   │   ├── auth/       # Authentication components
+│   │   ├── barber/     # Barber-related components
+│   │   └── common/     # Common components
+│   ├── pages/          # Page components
+│   ├── services/       # API requests
+│   ├── hooks/          # Custom React hooks
+│   ├── types/          # TypeScript types
+│   ├── utils/          # Helper functions
+│   └── App.tsx         # Main application component
+├── public/             # Static files
+└── package.json        # Dependencies
+```
 
-1. Gerekli paketleri yükleyin:
+## Completed Features
+
+### Authentication
+- [x] Login page
+- [x] Registration page
+- [x] JWT token management
+- [x] User authorization
+
+### Barber Panel
+- [x] Barber profile management
+- [x] Working hours setup
+- [x] Service management
+- [x] Appointment viewing and management
+
+### Customer Panel
+- [x] Barber list viewing
+- [x] Appointment creation
+- [x] Appointment history
+- [x] Profile management
+
+### Admin Panel
+- [x] User management
+- [x] Barber approval/rejection
+- [x] System statistics
+
+### UI/UX
+- [x] Responsive design
+- [x] Form validations
+- [x] Error handling
+- [x] Loading states
+- [x] Toast notifications
+
+## Development Status
+- [x] Basic page structure
+- [x] Authentication system
+- [x] Barber panel
+- [x] Customer panel
+- [x] Admin panel
+- [ ] Performance optimizations
+- [ ] Test coverage
+- [ ] PWA support
+- [ ] Multi-language support
+
+## Installation
+1. Install dependencies:
 ```bash
 npm install
 ```
 
-2. `.env` dosyasını oluşturun ve API URL'sini ayarlayın:
-```env
-VITE_API_URL=http://localhost:3000
+2. Configure environment variables:
+```bash
+cp .env.example .env
 ```
 
-3. Uygulamayı başlatın:
+3. Start development server:
 ```bash
 npm run dev
 ```
 
-## Özellikler
+4. Build for production:
+```bash
+npm run build
+```
 
-- Kullanıcı kaydı ve girişi
-- Randevu oluşturma ve yönetme
-- Randevu geçmişi görüntüleme
-- Responsive tasarım
-- Modern ve kullanıcı dostu arayüz
+## Features
 
-## Proje Yapısı
+- User registration and login
+- Appointment creation and management
+- Appointment history viewing
+- Responsive design
+- Modern and user-friendly interface
+
+## Project Structure
 
 ```
 src/
-├── components/     # Yeniden kullanılabilir UI bileşenleri
-├── pages/         # Sayfa bileşenleri
+├── components/     # Reusable UI components
+├── pages/         # Page components
 ├── hooks/         # Custom React hooks
-├── services/      # API servisleri
-├── types/         # TypeScript tipleri
-├── utils/         # Yardımcı fonksiyonlar
-└── App.tsx        # Ana uygulama bileşeni
+├── services/      # API services
+├── types/         # TypeScript types
+├── utils/         # Helper functions
+└── App.tsx        # Main application component
 ```
 
-## Geliştirme
+## Development
 
-- `npm run dev` - Geliştirme sunucusunu başlatır
-- `npm run build` - Projeyi derler
-- `npm run preview` - Derlenmiş projeyi önizler
+- `npm run dev` - Start development server
+- `npm run build` - Build project
+- `npm run preview` - Preview built project
 
-## Stil
+## Styling
 
-Tailwind CSS kullanılarak responsive ve modern bir tasarım oluşturulmuştur. Tema renkleri ve diğer stil değişkenleri `tailwind.config.js` dosyasında tanımlanmıştır.
+Tailwind CSS is used to create a responsive and modern design. Theme colors and other style variables are defined in `tailwind.config.js`.
 
-## API Entegrasyonu
+## API Integration
 
-Backend API'si ile iletişim için Axios ve React Query kullanılmaktadır. API istekleri `services` klasöründe organize edilmiştir.
+Axios and React Query are used for communication with the backend API. API requests are organized in the `services` directory.
 
-## Güvenlik
+## Security
 
-- JWT token yönetimi
+- JWT token management
 - Protected routes
-- Form validasyonu
-- XSS koruması 
+- Form validation
+- XSS protection 

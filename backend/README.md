@@ -1,35 +1,91 @@
 # Barber Booking Backend
 
-Bu proje, berber randevu sistemi için geliştirilmiş bir backend API'sidir.
+## Project Architecture
 
-## Teknolojiler
-
+### Technologies
 - Node.js
 - Express.js
 - TypeScript
-- Prisma (ORM)
-- PostgreSQL
+- Prisma (PostgreSQL)
 - JWT Authentication
+- Zod Validation
 
-## Kurulum
+### Directory Structure
+```
+backend/
+├── src/
+│   ├── controllers/     # Business logic
+│   ├── middleware/      # Middleware
+│   ├── routes/          # API routes
+│   ├── services/        # External services
+│   └── utils/           # Helper functions
+├── prisma/
+│   └── schema.prisma    # Database schema
+└── package.json         # Dependencies
+```
 
-1. Gerekli paketleri yükleyin:
+### Database Models
+- User: User information
+- Barber: Barber information
+- Service: Service information
+- WorkingHours: Working hours
+- TimeSlot: Available time slots
+- Appointment: Appointment information
+
+## Completed Features
+
+### User Operations
+- [x] User registration
+- [x] User login
+- [x] JWT token validation
+- [x] Role-based authorization
+
+### Barber Operations
+- [x] Barber registration
+- [x] Barber profile update
+- [x] Working hours management
+- [x] Service management
+
+### Appointment Operations
+- [x] Appointment creation
+- [x] Appointment listing
+- [x] Appointment status update
+- [x] Available time slot calculation
+
+### API Endpoints
+- [x] Auth endpoints
+- [x] Barber endpoints
+- [x] Service endpoints
+- [x] Appointment endpoints
+- [x] Working hours endpoints
+
+## Development Status
+- [x] Basic API structure
+- [x] Database schema
+- [x] Authentication system
+- [x] CRUD operations
+- [ ] Error handling improvements
+- [ ] Logging system
+- [ ] Rate limiting
+- [ ] API documentation
+
+## Installation
+1. Install dependencies:
 ```bash
 npm install
 ```
 
-2. `.env` dosyasını oluşturun ve gerekli değişkenleri ayarlayın:
-```env
-DATABASE_URL="postgresql://user:password@localhost:5432/barber_booking"
-JWT_SECRET="your-secret-key"
+2. Configure database connection:
+```bash
+cp .env.example .env
 ```
 
-3. Veritabanını oluşturun:
+3. Run database migrations:
 ```bash
 npx prisma migrate dev
 ```
 
-4. Uygulamayı başlatın:
+4. Start development server:
 ```bash
 npm run dev
 ```
@@ -37,93 +93,93 @@ npm run dev
 ## API Endpoints
 
 ### Auth
-- `POST /api/auth/register` - Kullanıcı kaydı
-- `POST /api/auth/login` - Kullanıcı girişi
-- `GET /api/auth/me` - Mevcut kullanıcı bilgileri
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `GET /api/auth/me` - Current user information
 
 ### Appointments
-- `GET /api/appointments` - Randevuları listele
-- `POST /api/appointments` - Yeni randevu oluştur
-- `PUT /api/appointments/:id` - Randevu güncelle
-- `DELETE /api/appointments/:id` - Randevu sil
+- `GET /api/appointments` - List appointments
+- `POST /api/appointments` - Create new appointment
+- `PUT /api/appointments/:id` - Update appointment
+- `DELETE /api/appointments/:id` - Delete appointment
 
-## Geliştirme
+## Development
 
-- `npm run dev` - Geliştirme sunucusunu başlatır
-- `npm run build` - Projeyi derler
-- `npm run start` - Derlenmiş projeyi çalıştırır
+- `npm run dev` - Start development server
+- `npm run build` - Build project
+- `npm run start` - Run built project
 
-## Veritabanı
+## Database
 
-Prisma ORM kullanılmaktadır. Veritabanı şeması `prisma/schema.prisma` dosyasında tanımlanmıştır.
+Prisma ORM is used. Database schema is defined in `prisma/schema.prisma` file.
 
-## Güvenlik
+## Security
 
-- JWT tabanlı kimlik doğrulama
-- Şifre hashleme
-- CORS yapılandırması
+- JWT-based authentication
+- Password hashing
+- CORS configuration
 - Rate limiting
 
-## Proje Kurulumu ve Başlangıç
-- Node.js projesi oluşturuldu
-- TypeScript kurulumu yapıldı
-- Express.js framework'ü eklendi
-- Gerekli bağımlılıklar yüklendi (bcrypt, cors, dotenv, jsonwebtoken)
+## Project Setup and Initialization
+- Node.js project created
+- TypeScript setup completed
+- Express.js framework added
+- Required dependencies installed (bcrypt, cors, dotenv, jsonwebtoken)
 
-## Authentication Sistemi
-### 1. Kullanıcı Kaydı (Register)
-- `/auth/register` endpoint'i oluşturuldu
-- Email ve şifre zorunlu alanlar olarak belirlendi
-- Şifreler bcrypt ile hash'lenerek saklanıyor
-- Email adresleri unique olarak ayarlandı
+## Authentication System
+### 1. User Registration
+- `/auth/register` endpoint created
+- Email and password set as required fields
+- Passwords stored with bcrypt hashing
+- Email addresses set as unique
 
-### 2. Kullanıcı Girişi (Login)
-- `/auth/login` endpoint'i oluşturuldu
-- JWT token implementasyonu yapıldı
-- Token'da kullanıcı bilgileri (id, email, role) saklanıyor
-- Token süresi 24 saat olarak ayarlandı
+### 2. User Login
+- `/auth/login` endpoint created
+- JWT token implementation completed
+- User information (id, email, role) stored in token
+- Token expiration set to 24 hours
 
 ### 3. Authentication Middleware
-- Token doğrulama middleware'i oluşturuldu
-- Rol bazlı yetkilendirme middleware'i eklendi
-- Kullanıcı bilgileri request nesnesine eklendi
+- Token validation middleware created
+- Role-based authorization middleware added
+- User information added to request object
 
-## Veritabanı Yapılandırması
-### 1. Prisma Kurulumu
-- Prisma ORM kuruldu
-- PostgreSQL veritabanı bağlantısı yapılandırıldı
-- Schema dosyası oluşturuldu
+## Database Configuration
+### 1. Prisma Setup
+- Prisma ORM installed
+- PostgreSQL database connection configured
+- Schema file created
 
-### 2. Veritabanı Modelleri
-- User modeli
+### 2. Database Models
+- User model
   - id, email, password, name, phone, role, appointments
   - Role enum: USER, ADMIN, BARBER
-- Barber modeli
+- Barber model
   - id, name, email, phone, services, appointments
-- Service modeli
+- Service model
   - id, name, description, duration, price, barber, appointments
-- Appointment modeli
+- Appointment model
   - id, date, status, user, barber, service
   - Status enum: PENDING, CONFIRMED, CANCELLED, COMPLETED
 
-## Berber Yönetimi
-### 1. Berber CRUD İşlemleri
-- GET `/barbers` - Tüm berberleri listele
-- GET `/barbers/:id` - Berber detayı
-- POST `/barbers` - Yeni berber ekle (admin)
-- PUT `/barbers/:id` - Berber güncelle (admin)
-- DELETE `/barbers/:id` - Berber sil (admin)
+## Barber Management
+### 1. Barber CRUD Operations
+- GET `/barbers` - List all barbers
+- GET `/barbers/:id` - Barber details
+- POST `/barbers` - Add new barber (admin)
+- PUT `/barbers/:id` - Update barber (admin)
+- DELETE `/barbers/:id` - Delete barber (admin)
 
-## Notlar
-- Admin kullanıcısı oluşturma script'i yazıldı
-- Sequence sıfırlama script'i oluşturuldu
-- Tüm endpoint'ler için hata yönetimi eklendi
-- Tüm işlemler için loglama yapıldı
+## Notes
+- Admin user creation script written
+- Sequence reset script created
+- Error handling added for all endpoints
+- Logging implemented for all operations
 
-## Yapılacaklar
-- [ ] Hizmet (Service) yönetimi
-- [ ] Randevu (Appointment) sistemi
-- [ ] Kullanıcı profil yönetimi
-- [ ] Berber profil yönetimi
-- [ ] Randevu durumu güncelleme
-- [ ] Email bildirim sistemi 
+## Todo
+- [ ] Service management
+- [ ] Appointment system
+- [ ] User profile management
+- [ ] Barber profile management
+- [ ] Appointment status update
+- [ ] Email notification system 
