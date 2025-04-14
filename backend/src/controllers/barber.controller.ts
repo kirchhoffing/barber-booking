@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { PrismaClient, TimeSlotStatus } from '@prisma/client';
+import { PrismaClient, TimeSlotStatus, WorkingHours } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -20,12 +20,13 @@ export const getWorkingHours = async (req: Request, res: Response) => {
       where: { barberId }
     });
 
-    // Her gün için çalışma saatlerini düzenle
+    // Her gün için çalışma saatlerini ve slot durumlarını düzenle
     const formattedHours = workingHours.map(hour => ({
       dayOfWeek: hour.dayOfWeek,
-      startTime: `${hour.startHour}:00`,
-      endTime: `${hour.endHour}:00`,
-      isOpen: true // Varsayılan olarak açık
+      startTime: hour.startTime,
+      endTime: hour.endTime,
+      isOpen: hour.isOpen,
+      slots: hour.slotStatus || {}
     }));
 
     res.json(formattedHours);
@@ -48,7 +49,7 @@ export const updateWorkingHours = async (req: Request, res: Response) => {
     }
 
     const workingHours = req.body;
-    console.log('Received working hours:', workingHours);
+    console.log('Received working hours:', JSON.stringify(workingHours, null, 2));
 
     // Mevcut çalışma saatlerini sil
     await prisma.workingHours.deleteMany({
@@ -58,18 +59,36 @@ export const updateWorkingHours = async (req: Request, res: Response) => {
     // Yeni çalışma saatlerini ekle
     const createdHours = await prisma.workingHours.createMany({
       data: workingHours.map((hour: any) => {
-        console.log('Processing hour:', hour);
+        console.log('Processing hour:', JSON.stringify(hour, null, 2));
         return {
-          dayOfWeek: parseInt(hour.dayOfWeek),
-          startTime: new Date(`1970-01-01T${hour.startTime}`),
-          endTime: new Date(`1970-01-01T${hour.endTime}`),
+          dayOfWeek: hour.dayOfWeek,
+          startTime: hour.startTime,
+          endTime: hour.endTime,
           isOpen: hour.isOpen,
+          slotStatus: hour.slots || {},
           barberId
         };
       })
     });
 
-    res.json(createdHours);
+    // Güncellenmiş saatleri getir
+    const updatedHours = await prisma.workingHours.findMany({
+      where: { barberId }
+    });
+
+    console.log('Updated hours from database:', JSON.stringify(updatedHours, null, 2));
+
+    const formattedHours = updatedHours.map(hour => ({
+      dayOfWeek: hour.dayOfWeek,
+      startTime: hour.startTime,
+      endTime: hour.endTime,
+      isOpen: hour.isOpen,
+      slots: hour.slotStatus || {}
+    }));
+
+    console.log('Formatted hours to send:', JSON.stringify(formattedHours, null, 2));
+
+    res.json(formattedHours);
   } catch (error) {
     console.error('Çalışma saatleri güncellenirken hata:', error);
     res.status(500).json({ message: 'Sunucu hatası' });

@@ -36,7 +36,9 @@ export const register = async (req: Request, res: Response) => {
     if (role === 'BARBER') {
       await prisma.barber.create({
         data: {
-          userId: user.id
+          userId: user.id,
+          name: name,
+          email: email
         }
       });
     }

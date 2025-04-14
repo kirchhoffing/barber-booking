@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import BarberDetail from './pages/BarberDetail';
 import BarberPanel from './pages/BarberPanel';
 import AdminPanel from './pages/AdminPanel';
+import { MainLayout } from './components/layout/MainLayout';
 
 // Protected Route bileşeni
 const ProtectedRoute = ({ children, roles }: { children: React.ReactNode; roles?: string[] }) => {
@@ -23,15 +24,16 @@ const ProtectedRoute = ({ children, roles }: { children: React.ReactNode; roles?
     }
   }
 
-  return <>{children}</>;
+  return <MainLayout showLogout showHome={!roles?.includes('BARBER')}>{children}</MainLayout>;
 };
 
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<MainLayout><Login /></MainLayout>} />
+        <Route path="/register" element={<MainLayout><Register /></MainLayout>} />
+        <Route path="/" element={<MainLayout><Home /></MainLayout>} />
         
         <Route
           path="/barber-panel"
@@ -47,15 +49,6 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute roles={['ADMIN']}>
               <AdminPanel />
-            </ProtectedRoute>
-          }
-        />
-        
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
             </ProtectedRoute>
           }
         />

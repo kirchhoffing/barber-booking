@@ -175,6 +175,7 @@ router.put('/:id/working-hours', authenticateToken, authorizeRole(['BARBER', 'AD
         startTime: hour.startTime,
         endTime: hour.endTime,
         isOpen: hour.isOpen,
+        slotStatus: hour.slots || {},
         barberId: Number(id)
       }))
     });

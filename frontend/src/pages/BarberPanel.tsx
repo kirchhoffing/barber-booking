@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { WorkingHours } from '../components/barber/WorkingHours';
 import { Services } from '../components/barber/Services';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function BarberPanel() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'hours' | 'services'>('hours');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -36,8 +38,8 @@ export default function BarberPanel() {
   }, [navigate]);
 
   const tabs = [
-    { id: 'hours', label: 'Çalışma Saatleri' },
-    { id: 'services', label: 'Hizmetler' }
+    { id: 'hours', label: t('workingHours') },
+    { id: 'services', label: t('services') }
   ] as const;
 
   if (error) {
@@ -53,7 +55,7 @@ export default function BarberPanel() {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">Berber Paneli</h1>
+        <h1 className="text-2xl font-bold mb-6">{t('barberPanel')}</h1>
         
         {/* Tabs */}
         <div className="flex space-x-4 mb-6">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getCurrentUser } from '../services/auth';
+import { useTranslation } from 'react-i18next';
 
 interface User {
   id: number;
@@ -10,6 +11,7 @@ interface User {
 }
 
 const AdminPanel: React.FC = () => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -25,7 +27,7 @@ const AdminPanel: React.FC = () => {
         });
         setUsers(response.data);
       } catch (err) {
-        setError('Kullanıcılar yüklenirken bir hata oluştu.');
+        setError(t('errorLoadingUsers'));
         console.error('Error fetching users:', err);
       } finally {
         setLoading(false);
@@ -52,7 +54,7 @@ const AdminPanel: React.FC = () => {
         user.id === userId ? { ...user, role: newRole } : user
       ));
     } catch (err) {
-      setError('Rol güncellenirken bir hata oluştu.');
+      setError(t('errorUpdatingRole'));
       console.error('Error updating role:', err);
     }
   };
@@ -77,23 +79,23 @@ const AdminPanel: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Admin Panel</h1>
+      <h1 className="text-3xl font-bold mb-6">{t('adminPanel')}</h1>
       
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                İsim
+                {t('name')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
+                {t('email')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Rol
+                {t('role')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                İşlemler
+                {t('actions')}
               </th>
             </tr>
           </thead>

@@ -10,6 +10,7 @@ export interface WorkingHour {
   startTime: string;
   endTime: string;
   isOpen: boolean;
+  slots: Record<string, string>;
 }
 
 // Berber ID'sini al

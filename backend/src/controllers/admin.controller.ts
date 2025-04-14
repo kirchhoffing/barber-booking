@@ -22,7 +22,9 @@ export const updateUserRole = async (req: Request, res: Response) => {
     if (role === 'BARBER') {
       await prisma.barber.create({
         data: {
-          userId: updatedUser.id
+          userId: updatedUser.id,
+          name: updatedUser.name,
+          email: updatedUser.email
         }
       });
     }

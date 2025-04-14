@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cities } from '../data/cities';
+import { useTranslation } from 'react-i18next';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
@@ -83,15 +85,15 @@ const Home: React.FC = () => {
           <div className="absolute right-4 flex items-center space-x-4">
             <button
               onClick={() => navigate('/login')}
-              className="px-4 py-2 text-[#1E1E1E] bg-white rounded hover:bg-gray-100 transition-colors font-medium"
+              className="w-32 px-4 py-2 text-[#1E1E1E] bg-white rounded hover:bg-gray-100 transition-colors font-medium"
             >
-              Giriş Yap
+              {t('login')}
             </button>
             <button
               onClick={() => navigate('/register')}
-              className="px-4 py-2 text-[#1E1E1E] bg-white rounded hover:bg-gray-100 transition-colors font-medium"
+              className="w-32 px-4 py-2 text-[#1E1E1E] bg-white rounded hover:bg-gray-100 transition-colors font-medium"
             >
-              Kayıt Ol
+              {t('register')}
             </button>
           </div>
           
@@ -105,14 +107,14 @@ const Home: React.FC = () => {
       {/* Main Content */}
       <div className="max-w-3xl mx-auto px-4 pt-16 pb-12">
         <h1 className="text-white text-4xl font-normal text-center mb-12">
-          Size En Yakın Berberi Bulun
+          {t('findNearestBarber')}
         </h1>
 
         {/* Search Inputs */}
         <div className="flex flex-col space-y-4">
           <input
             type="text"
-            placeholder="Berber ara..."
+            placeholder={t('searchBarber')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full px-4 py-3 bg-[#2C2C2C] text-white placeholder-gray-400 rounded focus:outline-none"
@@ -124,7 +126,7 @@ const Home: React.FC = () => {
             <div className="relative" ref={cityDropdownRef}>
               <input
                 type="text"
-                placeholder="İl Seçin"
+                placeholder={t('selectCity')}
                 value={selectedCity}
                 onChange={handleCityChange}
                 onFocus={() => setIsCityDropdownOpen(true)}
@@ -149,7 +151,7 @@ const Home: React.FC = () => {
             <div className="relative" ref={districtDropdownRef}>
               <input
                 type="text"
-                placeholder="İlçe Seçin"
+                placeholder={t('selectDistrict')}
                 value={selectedDistrict}
                 onChange={handleDistrictChange}
                 onFocus={() => selectedCity && setIsDistrictDropdownOpen(true)}

@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../services/auth';
+import { useTranslation } from 'react-i18next';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -28,7 +30,7 @@ export default function Login() {
         navigate('/');
       }
     } catch (error: any) {
-      setError(error.response?.data?.message || 'Giriş yapılırken bir hata oluştu');
+      setError(error.response?.data?.message || t('loginError'));
     } finally {
       setLoading(false);
     }
@@ -37,7 +39,7 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-white mb-6">Giriş Yap</h2>
+        <h2 className="text-2xl font-bold text-white mb-6">{t('login')}</h2>
         
         {error && (
           <div className="bg-red-500 text-white p-3 rounded mb-4">
@@ -48,7 +50,7 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-gray-300 mb-1">
-              Email
+              {t('email')}
             </label>
             <input
               id="email"
@@ -62,7 +64,7 @@ export default function Login() {
 
           <div>
             <label htmlFor="password" className="block text-gray-300 mb-1">
-              Şifre
+              {t('password')}
             </label>
             <input
               id="password"
@@ -83,7 +85,7 @@ export default function Login() {
                 : 'bg-blue-600 hover:bg-blue-700'
             } text-white font-semibold transition-colors`}
           >
-            {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+            {loading ? t('loggingIn') : t('login')}
           </button>
         </form>
       </div>

@@ -73,15 +73,18 @@ model Service {
 
 model WorkingHours {
   id        Int      @id @default(autoincrement())
-  dayOfWeek Day      // Enum kullanımı ile
-  startTime String   // Saat bilgisi (örn: "09:00")
-  endTime   String   // Saat bilgisi (örn: "21:00")
+  dayOfWeek Day      
+  startTime String   
+  endTime   String   
   isOpen    Boolean  @default(true)
+  slotStatus Json    @default("{}") // Store slot statuses as JSON
   barberId  Int
   barber    Barber   @relation(fields: [barberId], references: [id])
   timeSlots TimeSlot[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("working_hours")
 }
 
 

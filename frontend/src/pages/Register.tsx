@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from '../lib/axios'
+import { useTranslation } from 'react-i18next'
 
 const Register = () => {
+  const { t } = useTranslation();
   // 📌 Form state'leri
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -22,7 +24,7 @@ const Register = () => {
 
     // Basit doğrulama
     if (password !== confirmPassword) {
-      setError('Şifreler uyuşmuyor')
+      setError(t('passwordsDontMatch'))
       return
     }
 
@@ -51,14 +53,14 @@ const Register = () => {
       navigate('/login')
     } catch (err: any) {
       console.error('❌ Hata:', err)
-      setError(err.response?.data?.message || 'Bir hata oluştu')
+      setError(err.response?.data?.message || t('errorOccurred'))
     }
   }
 
   return (
     <div className="min-h-screen bg-[#1E1E1E] flex flex-col items-center justify-center p-4">
       <form onSubmit={handleRegister} className="w-full max-w-sm bg-white p-8 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.1)]">
-        <h2 className="text-3xl font-bold mb-8 text-gray-800 text-center">Kayıt Ol</h2>
+        <h2 className="text-3xl font-bold mb-8 text-gray-800 text-center">{t('register')}</h2>
 
         {error && (
           <div className="bg-red-50 border-l-4 border-red-500 text-red-600 p-4 rounded mb-6">
@@ -74,7 +76,7 @@ const Register = () => {
               onChange={(e) => setIsBarber(e.target.checked)}
               className="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 shadow-sm focus:ring-blue-500 transition-all"
             />
-            <span className="ml-2 text-sm font-medium">Berber olarak kayıt ol</span>
+            <span className="ml-2 text-sm font-medium">{t('registerAsBarber')}</span>
           </label>
         </div>
 
@@ -82,7 +84,7 @@ const Register = () => {
           <div className="relative">
             <input
               type="text"
-              placeholder="Ad Soyad"
+              placeholder={t('fullName')}
               className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors placeholder-gray-400 text-gray-700"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -93,7 +95,7 @@ const Register = () => {
           <div className="relative">
             <input
               type="email"
-              placeholder="Email"
+              placeholder={t('email')}
               className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors placeholder-gray-400 text-gray-700"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -104,7 +106,7 @@ const Register = () => {
           <div className="relative">
             <input
               type="tel"
-              placeholder="Telefon"
+              placeholder={t('phone')}
               className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors placeholder-gray-400 text-gray-700"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
@@ -115,7 +117,7 @@ const Register = () => {
           <div className="relative">
             <input
               type="password"
-              placeholder="Şifre"
+              placeholder={t('password')}
               className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors placeholder-gray-400 text-gray-700"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -126,7 +128,7 @@ const Register = () => {
           <div className="relative">
             <input
               type="password"
-              placeholder="Şifre Tekrar"
+              placeholder={t('confirmPassword')}
               className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors placeholder-gray-400 text-gray-700"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -139,7 +141,7 @@ const Register = () => {
           type="submit"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 px-4 rounded-xl mt-8 transition-colors duration-200 font-semibold text-base shadow-lg shadow-blue-500/30"
         >
-          Kayıt Ol
+          {t('register')}
         </button>
       </form>
     </div>
