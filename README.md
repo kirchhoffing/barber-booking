@@ -73,43 +73,6 @@ barber-booking/
 └── docs/                # Project documentation
 ```
 
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js (v18 or higher)
-- PostgreSQL (v14 or higher)
-- pnpm (recommended) or npm
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/kirchhoffing/barber-booking.git
-cd barber-booking
-```
-
-2. Install dependencies:
-```bash
-pnpm install
-```
-
-3. Set up the backend:
-```bash
-cd backend
-cp .env.example .env
-pnpm install
-npx prisma migrate dev
-pnpm run dev
-```
-
-4. Set up the frontend:
-```bash
-cd frontend
-cp .env.example .env
-pnpm install
-pnpm run dev
-```
-
 ## 📚 Learning Resources
 
 ### Frontend Development
@@ -124,44 +87,34 @@ pnpm run dev
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 - [JWT Introduction](https://jwt.io/introduction)
 
-## 🧪 Testing
+## 📋 Project Progress
 
-### Frontend Testing
-```bash
-cd frontend
-pnpm run test        # Run unit tests
-pnpm run test:e2e    # Run end-to-end tests
-```
+### Completed Features
+- Project setup and initial configuration
+- Basic frontend structure
+- Database schema design
+- User authentication system
+- Basic appointment booking flow
 
-### Backend Testing
-```bash
-cd backend
-pnpm run test        # Run unit tests
-pnpm run test:e2e    # Run end-to-end tests
-```
+### In Progress
+- Real-time availability updates
+- Calendar integration
+- Advanced filtering for barber search
+- Admin dashboard development
 
-## 📦 Deployment
-
-### Frontend Deployment
-```bash
-cd frontend
-pnpm run build       # Build production bundle
-pnpm run preview     # Preview production build
-```
-
-### Backend Deployment
-```bash
-cd backend
-pnpm run build       # Build production bundle
-pnpm run start       # Start production server
-```
+### Upcoming Features
+- Mobile application development
+- Payment integration
+- Review and rating system
+- Advanced analytics dashboard
 
 ## 🤝 Contributing
 
+We welcome contributions to the project. Please follow these steps:
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
 5. Open a Pull Request
 
 ## 📝 License
