@@ -13,86 +13,91 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  password  String
-  name      String?
-  phone     String?
-  role      Role      @default(USER)
-  appointments Appointment[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
-
-model Barber {
-  id          Int       @id @default(autoincrement())
-  name        String
-  email       String    @unique
-  phone       String?
-  services    Service[]
-  appointments Appointment[]
-  workingHours WorkingHours[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model Service {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String?
-  duration    Int       // Duration in minutes
-  price       Float
-  barber      Barber    @relation(fields: [barberId], references: [id])
-  barberId    Int
-  appointments Appointment[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model Appointment {
-  id        Int       @id @default(autoincrement())
-  date      DateTime
-  status    AppointmentStatus @default(PENDING)
-  user      User      @relation(fields: [userId], references: [id])
-  userId    Int
-  barber    Barber    @relation(fields: [barberId], references: [id])
-  barberId  Int
-  service   Service   @relation(fields: [serviceId], references: [id])
-  serviceId Int
-  timeSlot  TimeSlot?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
-
-model WorkingHours {
-  id        Int       @id @default(autoincrement())
-  dayOfWeek Int       // 0-6 (Sunday-Saturday)
-  startTime DateTime  // Store as DateTime but only use time part
-  endTime   DateTime  // Store as DateTime but only use time part
-  barber    Barber    @relation(fields: [barberId], references: [id])
-  barberId  Int
-  timeSlots TimeSlot[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
-
-model TimeSlot {
-  id            Int           @id @default(autoincrement())
-  date          DateTime
-  status        TimeSlotStatus @default(EMPTY)
-  workingHours  WorkingHours  @relation(fields: [workingHoursId], references: [id])
-  workingHoursId Int
-  appointment   Appointment?  @relation(fields: [appointmentId], references: [id])
-  appointmentId Int?         @unique
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-}
-
 enum Role {
   USER
   ADMIN
   BARBER
+}
+
+enum Day {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+
+model User {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  password    String
+  name        String
+  phone       String?
+  role        Role         @default(USER)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  barber      Barber?      // Eğer kullanıcı berber ise
+  appointments Appointment[]
+}
+
+model Barber {
+  id            Int           @id @default(autoincrement())
+  userId        Int          @unique
+  user          User         @relation(fields: [userId], references: [id])
+  name          String
+  email         String       @unique
+  phone         String?
+  services      Service[]
+  workingHours  WorkingHours[]
+  timeSlots     TimeSlot[]
+  appointments  Appointment[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model Service {
+  id          Int           @id @default(autoincrement())
+  name        String
+  duration    Int          // Dakika cinsinden
+  price       Float
+  description String?
+  barberId    Int
+  barber      Barber       @relation(fields: [barberId], references: [id])
+  appointments Appointment[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model WorkingHours {
+  id        Int      @id @default(autoincrement())
+  dayOfWeek Day      // Enum kullanımı ile
+  startTime String   // Saat bilgisi (örn: "09:00")
+  endTime   String   // Saat bilgisi (örn: "21:00")
+  isOpen    Boolean  @default(true)
+  barberId  Int
+  barber    Barber   @relation(fields: [barberId], references: [id])
+  timeSlots TimeSlot[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+model Appointment {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  status    String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED, COMPLETED
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  barberId  Int
+  barber    Barber   @relation(fields: [barberId], references: [id])
+  serviceId Int
+  service   Service  @relation(fields: [serviceId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum AppointmentStatus {
@@ -106,4 +111,16 @@ enum TimeSlotStatus {
   EMPTY
   FULL
   CLOSED
+}
+
+model TimeSlot {
+  id            Int           @id @default(autoincrement())
+  date          DateTime
+  status        TimeSlotStatus @default(EMPTY)
+  barberId      Int
+  barber        Barber        @relation(fields: [barberId], references: [id])
+  workingHourId Int
+  workingHour   WorkingHours  @relation(fields: [workingHourId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }

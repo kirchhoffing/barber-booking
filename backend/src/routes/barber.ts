@@ -2,8 +2,15 @@ import express from 'express'
 import { authenticateToken, authorizeRole } from '../middleware/auth'
 import prisma from '../lib/prisma'
 import bcrypt from 'bcrypt'
+import { Prisma } from '@prisma/client'
 
 const router = express.Router()
+
+interface CreateBarberRequest {
+  name: string
+  email: string
+  phone?: string
+}
 
 // Tüm berberleri listele
 router.get('/', async (req, res) => {
@@ -45,18 +52,35 @@ router.get('/:id', async (req, res) => {
 // Yeni berber ekle (sadece admin)
 router.post('/', authenticateToken, authorizeRole(['ADMIN']), async (req, res) => {
   try {
-    const { name, email, phone } = req.body
+    const { name, email, phone } = req.body as CreateBarberRequest
 
     if (!name || !email) {
       return res.status(400).json({ message: 'İsim ve email zorunludur' })
     }
 
-    const barber = await prisma.barber.create({
-      data: {
-        name,
-        email,
-        phone
-      }
+    const barber = await prisma.$transaction(async (tx) => {
+      // Önce user oluştur
+      const hashedPassword = await bcrypt.hash('temporary', 10)
+      
+      const user = await tx.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+          role: 'BARBER',
+          phone,
+        }
+      })
+
+      // Sonra berber oluştur
+      return await tx.barber.create({
+        data: {
+          name,
+          email,
+          phone,
+          userId: user.id
+        } as Prisma.BarberUncheckedCreateInput
+      })
     })
 
     res.status(201).json(barber)
@@ -117,44 +141,70 @@ router.delete('/:id', authenticateToken, authorizeRole(['ADMIN']), async (req, r
 })
 
 // Berber çalışma saatlerini ayarla
-router.post('/:id/working-hours', authenticateToken, authorizeRole(['BARBER', 'ADMIN']), async (req, res) => {
+router.put('/:id/working-hours', authenticateToken, authorizeRole(['BARBER', 'ADMIN']), async (req, res) => {
   try {
-    const { id } = req.params
-    const { dayOfWeek, startTime, endTime } = req.body
+    const { id } = req.params;
+    const workingHours = req.body;
 
-    if (!dayOfWeek || !startTime || !endTime) {
-      return res.status(400).json({ message: 'Tüm alanlar zorunludur' })
+    if (!Array.isArray(workingHours)) {
+      return res.status(400).json({ message: 'Geçersiz veri formatı' });
     }
 
-    const workingHours = await prisma.workingHours.create({
-      data: {
-        dayOfWeek,
-        startTime: new Date(startTime),
-        endTime: new Date(endTime),
-        barberId: Number(id)
-      }
-    })
+    // Veri doğrulama
+    const validDays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
+    const invalidHours = workingHours.some(hour => 
+      !validDays.includes(hour.dayOfWeek) ||
+      !hour.startTime ||
+      !hour.endTime ||
+      typeof hour.isOpen !== 'boolean'
+    );
 
-    res.status(201).json(workingHours)
+    if (invalidHours) {
+      return res.status(400).json({ message: 'Geçersiz çalışma saati verisi' });
+    }
+
+    // Önce mevcut çalışma saatlerini sil
+    await prisma.workingHours.deleteMany({
+      where: { barberId: Number(id) }
+    });
+
+    // Yeni çalışma saatlerini ekle
+    const createdHours = await prisma.workingHours.createMany({
+      data: workingHours.map(hour => ({
+        dayOfWeek: hour.dayOfWeek,
+        startTime: hour.startTime,
+        endTime: hour.endTime,
+        isOpen: hour.isOpen,
+        barberId: Number(id)
+      }))
+    });
+
+    // Oluşturulan saatleri getir ve frontend'e gönder
+    const updatedHours = await prisma.workingHours.findMany({
+      where: { barberId: Number(id) }
+    });
+
+    res.json(updatedHours);
   } catch (err) {
-    console.error('[set working hours error]', err)
-    res.status(500).json({ message: 'Sunucu hatası' })
+    console.error('[set working hours error]', err);
+    res.status(500).json({ message: 'Sunucu hatası' });
   }
-})
+});
 
 // Berber çalışma saatlerini getir
 router.get('/:id/working-hours', async (req, res) => {
   try {
-    const { id } = req.params
+    const { id } = req.params;
     const workingHours = await prisma.workingHours.findMany({
       where: { barberId: Number(id) }
-    })
-    res.json(workingHours)
+    });
+    
+    res.json(workingHours);
   } catch (err) {
-    console.error('[get working hours error]', err)
-    res.status(500).json({ message: 'Sunucu hatası' })
+    console.error('[get working hours error]', err);
+    res.status(500).json({ message: 'Sunucu hatası' });
   }
-})
+});
 
 // Berber randevularını getir
 router.get('/:id/appointments', authenticateToken, authorizeRole(['BARBER', 'ADMIN']), async (req, res) => {
@@ -243,7 +293,8 @@ router.post('/register', async (req, res) => {
       data: {
         name,
         email,
-        phone
+        phone,
+        userId: user.id
       }
     })
 
@@ -293,12 +344,12 @@ router.get('/:id/time-slots', authenticateToken, async (req, res) => {
     const { id } = req.params;
     const timeSlots = await prisma.timeSlot.findMany({
       where: {
-        workingHours: {
+        workingHour: {
           barberId: Number(id)
         }
       },
       orderBy: {
-        date: 'asc'
+        createdAt: 'asc'
       }
     });
     res.json(timeSlots);
@@ -325,5 +376,89 @@ router.put('/:id/time-slots/:slotId', authenticateToken, authorizeRole(['BARBER'
     res.status(500).json({ message: 'Sunucu hatası' });
   }
 });
+
+// Berber servislerini getir
+router.get('/:id/services', async (req, res) => {
+  try {
+    const { id } = req.params
+    const services = await prisma.service.findMany({
+      where: { barberId: Number(id) }
+    })
+    res.json(services)
+  } catch (err) {
+    console.error('[get services error]', err)
+    res.status(500).json({ message: 'Sunucu hatası' })
+  }
+})
+
+// Yeni servis ekle
+router.post('/:id/services', authenticateToken, authorizeRole(['BARBER', 'ADMIN']), async (req, res) => {
+  try {
+    const { id } = req.params
+    const { name, duration, price, description } = req.body
+
+    if (!name || !duration || !price) {
+      return res.status(400).json({ message: 'İsim, süre ve fiyat zorunludur' })
+    }
+
+    const service = await prisma.service.create({
+      data: {
+        name,
+        duration: Number(duration),
+        price: Number(price),
+        description,
+        barberId: Number(id)
+      }
+    })
+
+    res.status(201).json(service)
+  } catch (err) {
+    console.error('[create service error]', err)
+    res.status(500).json({ message: 'Sunucu hatası' })
+  }
+})
+
+// Servis güncelle
+router.put('/:id/services/:serviceId', authenticateToken, authorizeRole(['BARBER', 'ADMIN']), async (req, res) => {
+  try {
+    const { serviceId } = req.params
+    const { name, duration, price, description } = req.body
+
+    if (!name || !duration || !price) {
+      return res.status(400).json({ message: 'İsim, süre ve fiyat zorunludur' })
+    }
+
+    const service = await prisma.service.update({
+      where: { id: Number(serviceId) },
+      data: {
+        name,
+        duration: Number(duration),
+        price: Number(price),
+        description
+      }
+    })
+
+    res.json(service)
+  } catch (err) {
+    console.error('[update service error]', err)
+    res.status(500).json({ message: 'Sunucu hatası' })
+  }
+})
+
+// Servis sil
+router.delete('/:id/services/:serviceId', authenticateToken, authorizeRole(['BARBER', 'ADMIN']), async (req, res) => {
+  try {
+    const { serviceId } = req.params
+
+    await prisma.service.delete({
+      where: { id: Number(serviceId) }
+    })
+
+    res.json({ message: 'Servis başarıyla silindi' })
+  } catch (err) {
+    console.error('[delete service error]', err)
+    res.status(500).json({ message: 'Sunucu hatası' })
+  }
+})
 
 export default router 

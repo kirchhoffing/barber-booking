@@ -1,4 +1,68 @@
-# Barber Booking - Backend
+# Barber Booking Backend
+
+Bu proje, berber randevu sistemi için geliştirilmiş bir backend API'sidir.
+
+## Teknolojiler
+
+- Node.js
+- Express.js
+- TypeScript
+- Prisma (ORM)
+- PostgreSQL
+- JWT Authentication
+
+## Kurulum
+
+1. Gerekli paketleri yükleyin:
+```bash
+npm install
+```
+
+2. `.env` dosyasını oluşturun ve gerekli değişkenleri ayarlayın:
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/barber_booking"
+JWT_SECRET="your-secret-key"
+```
+
+3. Veritabanını oluşturun:
+```bash
+npx prisma migrate dev
+```
+
+4. Uygulamayı başlatın:
+```bash
+npm run dev
+```
+
+## API Endpoints
+
+### Auth
+- `POST /api/auth/register` - Kullanıcı kaydı
+- `POST /api/auth/login` - Kullanıcı girişi
+- `GET /api/auth/me` - Mevcut kullanıcı bilgileri
+
+### Appointments
+- `GET /api/appointments` - Randevuları listele
+- `POST /api/appointments` - Yeni randevu oluştur
+- `PUT /api/appointments/:id` - Randevu güncelle
+- `DELETE /api/appointments/:id` - Randevu sil
+
+## Geliştirme
+
+- `npm run dev` - Geliştirme sunucusunu başlatır
+- `npm run build` - Projeyi derler
+- `npm run start` - Derlenmiş projeyi çalıştırır
+
+## Veritabanı
+
+Prisma ORM kullanılmaktadır. Veritabanı şeması `prisma/schema.prisma` dosyasında tanımlanmıştır.
+
+## Güvenlik
+
+- JWT tabanlı kimlik doğrulama
+- Şifre hashleme
+- CORS yapılandırması
+- Rate limiting
 
 ## Proje Kurulumu ve Başlangıç
 - Node.js projesi oluşturuldu

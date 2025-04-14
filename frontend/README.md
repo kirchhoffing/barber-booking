@@ -1,108 +1,72 @@
-# BarberBook Frontend
+# Barber Booking Frontend
 
-Bu proje React + TypeScript + Vite kullanılarak geliştirilmiştir.
-
-## Özellikler
-
-- Modern ve koyu tema tasarımı
-- İl ve ilçe seçimi
-  - Arama ile filtreleme
-  - İl seçilmeden ilçe seçimi devre dışı
-  - Dropdown menüler
-- Berber arama fonksiyonu
-- Responsive tasarım
-- Giriş/Kayıt sistemi
+Bu proje, berber randevu sistemi için geliştirilmiş bir React frontend uygulamasıdır.
 
 ## Teknolojiler
 
-- React 18
+- React
 - TypeScript
 - Vite
 - Tailwind CSS
 - React Router
+- Axios
+- React Query
 
 ## Kurulum
 
-1. Projeyi klonlayın
-```bash
-git clone [repo-url]
-```
-
-2. Proje dizinine gidin
-```bash
-cd frontend
-```
-
-3. Bağımlılıkları yükleyin
+1. Gerekli paketleri yükleyin:
 ```bash
 npm install
 ```
 
-4. Geliştirme sunucusunu başlatın
+2. `.env` dosyasını oluşturun ve API URL'sini ayarlayın:
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+3. Uygulamayı başlatın:
 ```bash
 npm run dev
 ```
 
+## Özellikler
+
+- Kullanıcı kaydı ve girişi
+- Randevu oluşturma ve yönetme
+- Randevu geçmişi görüntüleme
+- Responsive tasarım
+- Modern ve kullanıcı dostu arayüz
+
 ## Proje Yapısı
 
 ```
-frontend/
-├── public/
-├── src/
-│   ├── data/
-│   │   └── cities.ts     # İl ve ilçe verileri
-│   │   └── components/     # Yeniden kullanılabilir UI bileşenleri
-│   │   └── pages/         # Sayfa bileşenleri
-│   │   └── hooks/         # Custom React hooks
-│   │   └── context/       # React context'leri
-│   │   └── services/      # API istekleri
-│   │   └── types/         # TypeScript tipleri
-│   │   └── utils/         # Yardımcı fonksiyonlar
-│   ├── App.tsx
-│   ├── main.tsx
-│   └── index.css
-├── package.json
-└── README.md
+src/
+├── components/     # Yeniden kullanılabilir UI bileşenleri
+├── pages/         # Sayfa bileşenleri
+├── hooks/         # Custom React hooks
+├── services/      # API servisleri
+├── types/         # TypeScript tipleri
+├── utils/         # Yardımcı fonksiyonlar
+└── App.tsx        # Ana uygulama bileşeni
 ```
 
-## Stil ve Tasarım
+## Geliştirme
 
-- Koyu tema (#1E1E1E arka plan)
-- Beyaz butonlar
-- Modern input tasarımı
-- Dropdown menüler
-- Responsive grid yapısı
+- `npm run dev` - Geliştirme sunucusunu başlatır
+- `npm run build` - Projeyi derler
+- `npm run preview` - Derlenmiş projeyi önizler
 
-## Authentication
-### 1. Login Sayfası
-- Email ve şifre ile giriş formu
+## Stil
+
+Tailwind CSS kullanılarak responsive ve modern bir tasarım oluşturulmuştur. Tema renkleri ve diğer stil değişkenleri `tailwind.config.js` dosyasında tanımlanmıştır.
+
+## API Entegrasyonu
+
+Backend API'si ile iletişim için Axios ve React Query kullanılmaktadır. API istekleri `services` klasöründe organize edilmiştir.
+
+## Güvenlik
+
+- JWT token yönetimi
+- Protected routes
 - Form validasyonu
-- Hata mesajları gösterimi
-- Başarılı girişte token saklama
-
-### 2. Register Sayfası
-- Kullanıcı kayıt formu
-- Form validasyonu
-- Hata mesajları gösterimi
-- Başarılı kayıt sonrası yönlendirme
-
-## State Yönetimi
-- React Context API kullanımı
-- Auth context oluşturuldu
-- Kullanıcı bilgileri ve token yönetimi
-
-## API İletişimi
-- Axios instance oluşturuldu
-- Interceptor'lar eklendi
-- Token yönetimi
-- Hata yönetimi
-
-## Yapılacaklar
-- [ ] Berber listesi sayfası
-- [ ] Berber detay sayfası
-- [ ] Randevu oluşturma sayfası
-- [ ] Kullanıcı profil sayfası
-- [ ] Admin paneli
-- [ ] Berber paneli
-- [ ] Randevu takvimi
-- [ ] Bildirim sistemi 
+- XSS koruması 

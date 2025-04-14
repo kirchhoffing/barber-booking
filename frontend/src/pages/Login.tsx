@@ -1,84 +1,92 @@
 // /src/pages/Login.tsx
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../lib/axios';
+import { login } from '../services/auth';
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/login', {
-        email,
-        password,
-      });
-
-      // Token'ı localStorage'a kaydet
-      localStorage.setItem('token', response.data.token);
+      const response = await login(email, password);
       
-      // Kullanıcı rolüne göre yönlendir
-      if (response.data.user.role === 'BARBER') {
+      // Kullanıcı rolüne göre yönlendirme yap
+      if (response.user.role === 'BARBER') {
         navigate('/barber-panel');
+      } else if (response.user.role === 'ADMIN') {
+        navigate('/admin-panel');
       } else {
         navigate('/');
       }
     } catch (error: any) {
       setError(error.response?.data?.message || 'Giriş yapılırken bir hata oluştu');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#1E1E1E] flex flex-col items-center justify-center p-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white p-8 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.1)]"
-      >
-        <h2 className="text-3xl font-bold mb-8 text-gray-800 text-center">Giriş Yap</h2>
-
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold text-white mb-6">Giriş Yap</h2>
+        
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 text-red-600 p-4 rounded mb-6">
+          <div className="bg-red-500 text-white p-3 rounded mb-4">
             {error}
           </div>
         )}
 
-        <div className="space-y-4">
-          <div className="relative">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-gray-300 mb-1">
+              Email
+            </label>
             <input
+              id="email"
               type="email"
-              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors placeholder-gray-400 text-gray-700"
+              className="w-full p-2 rounded bg-gray-700 text-white border border-gray-600 focus:border-blue-500 focus:outline-none"
               required
             />
           </div>
 
-          <div className="relative">
+          <div>
+            <label htmlFor="password" className="block text-gray-300 mb-1">
+              Şifre
+            </label>
             <input
+              id="password"
               type="password"
-              placeholder="Şifre"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors placeholder-gray-400 text-gray-700"
+              className="w-full p-2 rounded bg-gray-700 text-white border border-gray-600 focus:border-blue-500 focus:outline-none"
               required
             />
           </div>
-        </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 px-4 rounded-xl mt-8 transition-colors duration-200 font-semibold text-base shadow-lg shadow-blue-500/30"
-        >
-          Giriş Yap
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-2 px-4 rounded ${
+              loading
+                ? 'bg-blue-700 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700'
+            } text-white font-semibold transition-colors`}
+          >
+            {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
