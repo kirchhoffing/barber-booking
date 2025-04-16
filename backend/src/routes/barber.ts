@@ -2,7 +2,7 @@ import express from 'express'
 import { authenticateToken, authorizeRole } from '../middleware/auth'
 import prisma from '../lib/prisma'
 import bcrypt from 'bcrypt'
-import { Prisma } from '@prisma/client'
+import { Prisma, Role } from '@prisma/client'
 
 const router = express.Router()
 
@@ -32,7 +32,7 @@ router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params
     const barber = await prisma.barber.findUnique({
-      where: { id: Number(id) },
+      where: { id },
       include: {
         services: true
       }
@@ -67,7 +67,7 @@ router.post('/', authenticateToken, authorizeRole(['ADMIN']), async (req, res) =
           name,
           email,
           password: hashedPassword,
-          role: 'BARBER',
+          role: 'BARBER' as Role,
           phone,
         }
       })
@@ -79,7 +79,7 @@ router.post('/', authenticateToken, authorizeRole(['ADMIN']), async (req, res) =
           email,
           phone,
           userId: user.id
-        } as Prisma.BarberUncheckedCreateInput
+        }
       })
     })
 
@@ -100,7 +100,7 @@ router.put('/:id', authenticateToken, authorizeRole(['ADMIN']), async (req, res)
     const { name, email, phone } = req.body
 
     const barber = await prisma.barber.update({
-      where: { id: Number(id) },
+      where: { id },
       data: {
         name,
         email,
@@ -127,7 +127,7 @@ router.delete('/:id', authenticateToken, authorizeRole(['ADMIN']), async (req, r
     const { id } = req.params
 
     await prisma.barber.delete({
-      where: { id: Number(id) }
+      where: { id }
     })
 
     res.json({ message: 'Berber başarıyla silindi' })
@@ -165,7 +165,7 @@ router.put('/:id/working-hours', authenticateToken, authorizeRole(['BARBER', 'AD
 
     // Önce mevcut çalışma saatlerini sil
     await prisma.workingHours.deleteMany({
-      where: { barberId: Number(id) }
+      where: { barberId: id }
     });
 
     // Yeni çalışma saatlerini ekle
@@ -176,13 +176,13 @@ router.put('/:id/working-hours', authenticateToken, authorizeRole(['BARBER', 'AD
         endTime: hour.endTime,
         isOpen: hour.isOpen,
         slotStatus: hour.slots || {},
-        barberId: Number(id)
+        barberId: id
       }))
     });
 
     // Oluşturulan saatleri getir ve frontend'e gönder
     const updatedHours = await prisma.workingHours.findMany({
-      where: { barberId: Number(id) }
+      where: { barberId: id }
     });
 
     res.json(updatedHours);
@@ -197,7 +197,7 @@ router.get('/:id/working-hours', async (req, res) => {
   try {
     const { id } = req.params;
     const workingHours = await prisma.workingHours.findMany({
-      where: { barberId: Number(id) }
+      where: { barberId: id }
     });
     
     res.json(workingHours);
@@ -212,7 +212,7 @@ router.get('/:id/appointments', authenticateToken, authorizeRole(['BARBER', 'ADM
   try {
     const { id } = req.params
     const appointments = await prisma.appointment.findMany({
-      where: { barberId: Number(id) },
+      where: { barberId: id },
       include: {
         user: {
           select: {
@@ -235,7 +235,7 @@ router.put('/:id/appointments/:appointmentId/cancel', authenticateToken, authori
   try {
     const { appointmentId } = req.params
     const appointment = await prisma.appointment.update({
-      where: { id: Number(appointmentId) },
+      where: { id: appointmentId },
       data: { status: 'CANCELLED' }
     })
     res.json(appointment)
@@ -251,14 +251,11 @@ router.put('/:id/time-slots/:timeSlotId', authenticateToken, authorizeRole(['BAR
     const { timeSlotId } = req.params
     const { status } = req.body
 
-    if (!status || !['EMPTY', 'FULL', 'CLOSED'].includes(status)) {
-      return res.status(400).json({ message: 'Geçersiz durum' })
-    }
-
     const timeSlot = await prisma.timeSlot.update({
-      where: { id: Number(timeSlotId) },
+      where: { id: timeSlotId },
       data: { status }
     })
+
     res.json(timeSlot)
   } catch (err) {
     console.error('[update time slot error]', err)
@@ -316,7 +313,7 @@ router.get('/by-user/:userId', authenticateToken, async (req, res) => {
     
     // Önce kullanıcıyı kontrol et
     const user = await prisma.user.findUnique({
-      where: { id: Number(userId) }
+      where: { id: userId }
     });
 
     if (!user || user.role !== 'BARBER') {
@@ -346,7 +343,7 @@ router.get('/:id/time-slots', authenticateToken, async (req, res) => {
     const timeSlots = await prisma.timeSlot.findMany({
       where: {
         workingHour: {
-          barberId: Number(id)
+          barberId: id
         }
       },
       orderBy: {
@@ -367,7 +364,7 @@ router.put('/:id/time-slots/:slotId', authenticateToken, authorizeRole(['BARBER'
     const { status } = req.body;
 
     const timeSlot = await prisma.timeSlot.update({
-      where: { id: Number(slotId) },
+      where: { id: slotId },
       data: { status }
     });
 
@@ -378,12 +375,12 @@ router.put('/:id/time-slots/:slotId', authenticateToken, authorizeRole(['BARBER'
   }
 });
 
-// Berber servislerini getir
+// Berber hizmetlerini getir
 router.get('/:id/services', async (req, res) => {
   try {
     const { id } = req.params
     const services = await prisma.service.findMany({
-      where: { barberId: Number(id) }
+      where: { barberId: id }
     })
     res.json(services)
   } catch (err) {
@@ -392,23 +389,19 @@ router.get('/:id/services', async (req, res) => {
   }
 })
 
-// Yeni servis ekle
+// Yeni hizmet ekle
 router.post('/:id/services', authenticateToken, authorizeRole(['BARBER', 'ADMIN']), async (req, res) => {
   try {
     const { id } = req.params
     const { name, duration, price, description } = req.body
 
-    if (!name || !duration || !price) {
-      return res.status(400).json({ message: 'İsim, süre ve fiyat zorunludur' })
-    }
-
     const service = await prisma.service.create({
       data: {
         name,
-        duration: Number(duration),
-        price: Number(price),
+        duration,
+        price,
         description,
-        barberId: Number(id)
+        barberId: id
       }
     })
 
@@ -419,22 +412,18 @@ router.post('/:id/services', authenticateToken, authorizeRole(['BARBER', 'ADMIN'
   }
 })
 
-// Servis güncelle
+// Hizmet güncelle
 router.put('/:id/services/:serviceId', authenticateToken, authorizeRole(['BARBER', 'ADMIN']), async (req, res) => {
   try {
     const { serviceId } = req.params
     const { name, duration, price, description } = req.body
 
-    if (!name || !duration || !price) {
-      return res.status(400).json({ message: 'İsim, süre ve fiyat zorunludur' })
-    }
-
     const service = await prisma.service.update({
-      where: { id: Number(serviceId) },
+      where: { id: serviceId },
       data: {
         name,
-        duration: Number(duration),
-        price: Number(price),
+        duration,
+        price,
         description
       }
     })
@@ -446,16 +435,16 @@ router.put('/:id/services/:serviceId', authenticateToken, authorizeRole(['BARBER
   }
 })
 
-// Servis sil
+// Hizmet sil
 router.delete('/:id/services/:serviceId', authenticateToken, authorizeRole(['BARBER', 'ADMIN']), async (req, res) => {
   try {
     const { serviceId } = req.params
 
     await prisma.service.delete({
-      where: { id: Number(serviceId) }
+      where: { id: serviceId }
     })
 
-    res.json({ message: 'Servis başarıyla silindi' })
+    res.json({ message: 'Hizmet başarıyla silindi' })
   } catch (err) {
     console.error('[delete service error]', err)
     res.status(500).json({ message: 'Sunucu hatası' })

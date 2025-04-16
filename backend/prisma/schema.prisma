@@ -29,9 +29,8 @@ enum Day {
   SUNDAY
 }
 
-
 model User {
-  id          Int           @id @default(autoincrement())
+  id          String        @id @default(cuid())
   email       String        @unique
   password    String
   name        String
@@ -41,11 +40,13 @@ model User {
   updatedAt   DateTime      @updatedAt
   barber      Barber?      // Eğer kullanıcı berber ise
   appointments Appointment[]
+
+  @@map("users")
 }
 
 model Barber {
-  id            Int           @id @default(autoincrement())
-  userId        Int          @unique
+  id            String        @id @default(cuid())
+  userId        String       @unique
   user          User         @relation(fields: [userId], references: [id])
   name          String
   email         String       @unique
@@ -56,29 +57,33 @@ model Barber {
   appointments  Appointment[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
+
+  @@map("barbers")
 }
 
 model Service {
-  id          Int           @id @default(autoincrement())
+  id          String        @id @default(cuid())
   name        String
   duration    Int          // Dakika cinsinden
   price       Float
   description String?
-  barberId    Int
+  barberId    String
   barber      Barber       @relation(fields: [barberId], references: [id])
   appointments Appointment[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
+  @@map("services")
 }
 
 model WorkingHours {
-  id        Int      @id @default(autoincrement())
+  id        String      @id @default(cuid())
   dayOfWeek Day      
   startTime String   
   endTime   String   
   isOpen    Boolean  @default(true)
   slotStatus Json    @default("{}") // Store slot statuses as JSON
-  barberId  Int
+  barberId  String
   barber    Barber   @relation(fields: [barberId], references: [id])
   timeSlots TimeSlot[]
   createdAt DateTime @default(now())
@@ -87,20 +92,20 @@ model WorkingHours {
   @@map("working_hours")
 }
 
-
-
 model Appointment {
-  id        Int      @id @default(autoincrement())
+  id        String      @id @default(cuid())
   date      DateTime
   status    String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED, COMPLETED
-  userId    Int
+  userId    String
   user      User     @relation(fields: [userId], references: [id])
-  barberId  Int
+  barberId  String
   barber    Barber   @relation(fields: [barberId], references: [id])
-  serviceId Int
+  serviceId String
   service   Service  @relation(fields: [serviceId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("appointments")
 }
 
 enum AppointmentStatus {
@@ -117,13 +122,15 @@ enum TimeSlotStatus {
 }
 
 model TimeSlot {
-  id            Int           @id @default(autoincrement())
+  id            String        @id @default(cuid())
   date          DateTime
   status        TimeSlotStatus @default(EMPTY)
-  barberId      Int
+  barberId      String
   barber        Barber        @relation(fields: [barberId], references: [id])
-  workingHourId Int
+  workingHourId String
   workingHour   WorkingHours  @relation(fields: [workingHourId], references: [id])
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+
+  @@map("time_slots")
 }

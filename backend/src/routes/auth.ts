@@ -16,8 +16,11 @@ router.post('/login', login)
 // Mevcut kullanıcı bilgilerini getir
 router.get('/me', authenticateToken, async (req, res) => {
   try {
-    // @ts-ignore - req.user token middleware'den geliyor
-    const userId = req.user.id;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ message: 'Yetkilendirme gerekli' });
+    }
 
     const user = await prisma.user.findUnique({
       where: { id: userId },

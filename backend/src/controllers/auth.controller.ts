@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -28,7 +28,7 @@ export const register = async (req: Request, res: Response) => {
         password: hashedPassword,
         name,
         phone,
-        role: role || 'USER'
+        role: (role || 'USER') as Role
       }
     });
 

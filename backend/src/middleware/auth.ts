@@ -1,15 +1,15 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Role } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 // JWT payload tipi
 interface JwtPayload {
-  userId: number
+  userId: string
   email: string
-  role: string
-  barberId: number
+  role: Role
+  barberId?: string
   iat: number
   exp: number
 }
@@ -19,10 +19,10 @@ declare global {
   namespace Express {
     interface Request {
       user?: {
-        id: number
+        id: string
         email: string
-        role: string
-        barberId?: number
+        role: Role
+        barberId?: string
       }
     }
   }
@@ -45,7 +45,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
     
     // Kullanıcı bilgilerini al
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId }, // userId kullan
+      where: { id: decoded.userId },
       include: {
         barber: true
       }
@@ -77,7 +77,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
 }
 
 // Rol bazlı yetkilendirme middleware'i
-export const authorizeRole = (roles: string[]) => {
+export const authorizeRole = (roles: Role[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({ message: 'Yetkilendirme gerekli.' })

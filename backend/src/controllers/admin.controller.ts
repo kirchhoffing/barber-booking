@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -15,7 +15,7 @@ export const updateUserRole = async (req: Request, res: Response) => {
     // Kullanıcının rolünü güncelle
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: { role }
+      data: { role: role as Role }
     });
 
     // Eğer kullanıcı BARBER rolüne yükseltiliyorsa, Barber kaydı oluştur

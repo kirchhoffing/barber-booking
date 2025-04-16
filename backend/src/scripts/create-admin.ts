@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import prisma from '../lib/prisma'
+import { Role } from '@prisma/client'
 
 async function createAdmin() {
   try {
@@ -11,7 +12,7 @@ async function createAdmin() {
         password: hashedPassword,
         name: 'Admin User',
         phone: '5551234567',
-        role: 'ADMIN'
+        role: 'ADMIN' as Role
       }
     })
 

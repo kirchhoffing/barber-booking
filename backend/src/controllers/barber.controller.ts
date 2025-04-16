@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { PrismaClient, TimeSlotStatus, WorkingHours } from '@prisma/client';
+import { PrismaClient, TimeSlotStatus, Day } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 // Çalışma Saatleri
 export const getWorkingHours = async (req: Request, res: Response) => {
   try {
-    const barberId = parseInt(req.params.barberId);
+    const barberId = req.params.barberId;
     if (!barberId) {
       return res.status(400).json({ message: 'Berber ID bulunamadı' });
     }
@@ -38,7 +38,7 @@ export const getWorkingHours = async (req: Request, res: Response) => {
 
 export const updateWorkingHours = async (req: Request, res: Response) => {
   try {
-    const barberId = parseInt(req.params.barberId);
+    const barberId = req.params.barberId;
     if (!barberId) {
       return res.status(400).json({ message: 'Berber ID bulunamadı' });
     }
@@ -61,7 +61,7 @@ export const updateWorkingHours = async (req: Request, res: Response) => {
       data: workingHours.map((hour: any) => {
         console.log('Processing hour:', JSON.stringify(hour, null, 2));
         return {
-          dayOfWeek: hour.dayOfWeek,
+          dayOfWeek: hour.dayOfWeek as Day,
           startTime: hour.startTime,
           endTime: hour.endTime,
           isOpen: hour.isOpen,
@@ -98,7 +98,7 @@ export const updateWorkingHours = async (req: Request, res: Response) => {
 // Hizmetler
 export const getServices = async (req: Request, res: Response) => {
   try {
-    const barberId = parseInt(req.params.barberId);
+    const barberId = req.params.barberId;
     if (!barberId) {
       return res.status(400).json({ message: 'Berber ID bulunamadı' });
     }
@@ -121,7 +121,7 @@ export const getServices = async (req: Request, res: Response) => {
 
 export const createService = async (req: Request, res: Response) => {
   try {
-    const barberId = parseInt(req.params.barberId);
+    const barberId = req.params.barberId;
     if (!barberId) {
       return res.status(400).json({ message: 'Berber ID bulunamadı' });
     }
@@ -148,7 +148,7 @@ export const createService = async (req: Request, res: Response) => {
 export const updateService = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const barberId = parseInt(req.params.barberId);
+    const barberId = req.params.barberId;
     if (!barberId) {
       return res.status(400).json({ message: 'Berber ID bulunamadı' });
     }
@@ -160,7 +160,7 @@ export const updateService = async (req: Request, res: Response) => {
 
     const service = await prisma.service.update({
       where: { 
-        id: parseInt(id),
+        id,
         barberId
       },
       data: req.body
@@ -176,7 +176,7 @@ export const updateService = async (req: Request, res: Response) => {
 export const deleteService = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const barberId = parseInt(req.params.barberId);
+    const barberId = req.params.barberId;
     if (!barberId) {
       return res.status(400).json({ message: 'Berber ID bulunamadı' });
     }
@@ -188,7 +188,7 @@ export const deleteService = async (req: Request, res: Response) => {
 
     await prisma.service.delete({
       where: { 
-        id: parseInt(id),
+        id,
         barberId
       }
     });
@@ -203,7 +203,7 @@ export const deleteService = async (req: Request, res: Response) => {
 // Randevular
 export const getAppointments = async (req: Request, res: Response) => {
   try {
-    const barberId = parseInt(req.params.barberId);
+    const barberId = req.params.barberId;
     if (!barberId) {
       return res.status(400).json({ message: 'Berber ID bulunamadı' });
     }
@@ -237,7 +237,7 @@ export const updateAppointmentStatus = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-    const barberId = parseInt(req.params.barberId);
+    const barberId = req.params.barberId;
     if (!barberId) {
       return res.status(400).json({ message: 'Berber ID bulunamadı' });
     }
@@ -249,7 +249,7 @@ export const updateAppointmentStatus = async (req: Request, res: Response) => {
 
     const appointment = await prisma.appointment.update({
       where: { 
-        id: parseInt(id),
+        id,
         barberId
       },
       data: { status }
