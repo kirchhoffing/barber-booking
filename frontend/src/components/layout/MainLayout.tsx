@@ -23,27 +23,27 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children, showLogout = f
     if (!isAuthenticated()) {
       navigate('/');
     } else if (hasRole('BARBER')) {
-      navigate('/barber-panel');
+      navigate('/barber-dashboard');
     } else if (hasRole('ADMIN')) {
-      navigate('/admin-panel');
+      navigate('/admin-dashboard');
     } else {
       navigate('/');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      {showHome && (
-        <div className="fixed top-4 left-4 z-50 flex items-center gap-4">
+    <div className="min-h-screen bg-gray-900 relative">
+      <div className="fixed top-4 left-4 z-50 flex items-center gap-4">
+        {showHome && (
           <button
             onClick={handleHome}
             className="w-32 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
             {t('home')}
           </button>
-          <LanguageSwitcher />
-        </div>
-      )}
+        )}
+        <LanguageSwitcher />
+      </div>
       {showLogout && (
         <div className="fixed top-4 right-4 z-50">
           <button
@@ -54,7 +54,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children, showLogout = f
           </button>
         </div>
       )}
-      {children}
+      <div className="relative z-10">
+        {children}
+      </div>
     </div>
   );
 }; 

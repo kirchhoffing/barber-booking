@@ -24,6 +24,7 @@ import dotenv from 'dotenv'
 import authRoutes from './routes/auth'
 import userRoutes from './routes/user'
 import barberRoutes from './routes/barber'
+import adminRoutes from './routes/adminRoutes'
 
 // Load environment variables from .env file
 dotenv.config()
@@ -71,12 +72,14 @@ app.use(express.urlencoded({ extended: true }))
  * - /auth: Authentication endpoints
  * - /api/user: User management endpoints
  * - /api/barber: Barber-specific endpoints
+ * - /admin: Admin-specific endpoints
  * 
  * Each route group is handled by its own router file
  */
 app.use('/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/barber', barberRoutes)
+app.use('/admin', adminRoutes)
 
 /**
  * Error Handling Middleware

@@ -16,7 +16,7 @@ import express, { Express } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth';
 import barberRoutes from './routes/barber.routes';
-import adminRoutes from './routes/admin.routes';
+import adminRoutes from './routes/adminRoutes';
 
 // Initialize Express application with TypeScript type
 const app: Express = express();
@@ -48,6 +48,6 @@ app.use(express.json());
  */
 app.use('/auth', authRoutes);
 app.use('/api/barber', barberRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/admin', adminRoutes);
 
 export default app; 

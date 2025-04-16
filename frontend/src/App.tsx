@@ -16,7 +16,7 @@ import { isAuthenticated, hasRole } from './services/auth';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import BarberDetail from './pages/BarberDetail';
+//import BarberDetail from './pages/BarberDetail';
 import BarberDashboard from './pages/BarberDashboard';
 import AdminPanel from './pages/AdminPanel';
 import { MainLayout } from './components/layout/MainLayout';
@@ -55,7 +55,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
   }
 
   // Render protected content with layout
-  return <MainLayout showLogout showHome={!roles?.includes('BARBER')}>{children}</MainLayout>;
+  return <MainLayout showLogout showHome={!roles?.some(role => ['ADMIN', 'BARBER'].includes(role))}>{children}</MainLayout>;
 };
 
 /**
@@ -85,7 +85,7 @@ const App: React.FC = () => (
         } 
       />
       <Route 
-        path="/admin-panel" 
+        path="/admin-dashboard" 
         element={
           <ProtectedRoute roles={['ADMIN']}>
             <AdminPanel />

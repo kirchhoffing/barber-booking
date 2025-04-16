@@ -13,9 +13,14 @@ export interface LoginResponse {
   user: User;
 }
 
-export const login = async (email: string, password: string): Promise<LoginResponse> => {
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export const login = async (credentials: LoginCredentials): Promise<LoginResponse> => {
   try {
-    const response = await axios.post<LoginResponse>('/auth/login', { email, password });
+    const response = await axios.post<LoginResponse>('/auth/login', credentials);
     const { token, user } = response.data;
     
     localStorage.setItem('token', token);
