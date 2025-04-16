@@ -1,7 +1,7 @@
 // /src/pages/Register.tsx
 
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import axios from '../lib/axios'
 import { useTranslation } from 'react-i18next'
 
@@ -59,7 +59,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-[#1E1E1E] flex flex-col items-center justify-center p-4">
-      <form onSubmit={handleRegister} className="w-full max-w-sm bg-white p-8 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.1)]">
+      <form onSubmit={handleRegister} className="w-full max-w-sm bg-gray-100 p-8 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.1)]">
         <h2 className="text-3xl font-bold mb-8 text-gray-800 text-center">{t('register')}</h2>
 
         {error && (
@@ -143,6 +143,15 @@ const Register = () => {
         >
           {t('register')}
         </button>
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-600">
+            {t('haveAccount')}{' '}
+            <Link to="/login" className="text-blue-600 hover:text-blue-700 font-semibold">
+              {t('loginNow')}
+            </Link>
+          </p>
+        </div>
       </form>
     </div>
   )

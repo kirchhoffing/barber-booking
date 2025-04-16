@@ -1,7 +1,7 @@
 // /src/pages/Login.tsx
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../services/auth';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +23,7 @@ export default function Login() {
       
       // Kullanıcı rolüne göre yönlendirme yap
       if (response.user.role === 'BARBER') {
-        navigate('/barber-panel');
+        navigate('/barber-dashboard');
       } else if (response.user.role === 'ADMIN') {
         navigate('/admin-panel');
       } else {
@@ -37,9 +37,9 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-white mb-6">{t('login')}</h2>
+    <div className="min-h-screen bg-[#1E1E1E] flex items-center justify-center">
+      <div className="bg-gray-100 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">{t('login')}</h2>
         
         {error && (
           <div className="bg-red-500 text-white p-3 rounded mb-4">
@@ -49,7 +49,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-gray-300 mb-1">
+            <label htmlFor="email" className="block text-gray-700 mb-1">
               {t('email')}
             </label>
             <input
@@ -57,13 +57,13 @@ export default function Login() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 rounded bg-gray-700 text-white border border-gray-600 focus:border-blue-500 focus:outline-none"
+              className="w-full p-2 rounded bg-white text-gray-800 border border-gray-300 focus:border-blue-500 focus:outline-none"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-gray-300 mb-1">
+            <label htmlFor="password" className="block text-gray-700 mb-1">
               {t('password')}
             </label>
             <input
@@ -71,7 +71,7 @@ export default function Login() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 rounded bg-gray-700 text-white border border-gray-600 focus:border-blue-500 focus:outline-none"
+              className="w-full p-2 rounded bg-white text-gray-800 border border-gray-300 focus:border-blue-500 focus:outline-none"
               required
             />
           </div>
@@ -88,6 +88,15 @@ export default function Login() {
             {loading ? t('loggingIn') : t('login')}
           </button>
         </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-600">
+            {t('noAccount')}{' '}
+            <Link to="/register" className="text-blue-600 hover:text-blue-700 font-semibold">
+              {t('registerNow')}
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

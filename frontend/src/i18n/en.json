@@ -21,7 +21,7 @@
   "passwordsDontMatch": "Passwords do not match",
   "errorOccurred": "An error occurred",
   "registerAsBarber": "Register as a barber",
-  "barberPanel": "Barber Panel",
+  "barberDashboard": "Barber Panel",
   "workingHours": "Working Hours",
   "services": "Services",
   "adminPanel": "Admin Panel",
@@ -29,5 +29,9 @@
   "role": "Role",
   "actions": "Actions",
   "errorLoadingUsers": "An error occurred while loading users",
-  "errorUpdatingRole": "An error occurred while updating role"
+  "errorUpdatingRole": "An error occurred while updating role",
+  "noAccount": "Don't have an account?",
+  "registerNow": "Register now!",
+  "haveAccount": "Already have an account?",
+  "loginNow": "Login now!"
 } 

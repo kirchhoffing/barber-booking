@@ -17,7 +17,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import BarberDetail from './pages/BarberDetail';
-import BarberPanel from './pages/BarberPanel';
+import BarberDashboard from './pages/BarberDashboard';
 import AdminPanel from './pages/AdminPanel';
 import { MainLayout } from './components/layout/MainLayout';
 
@@ -77,10 +77,10 @@ const App: React.FC = () => (
       
       {/* Protected Routes */}
       <Route 
-        path="/barber-panel" 
+        path="/barber-dashboard" 
         element={
           <ProtectedRoute roles={['BARBER']}>
-            <BarberPanel />
+            <BarberDashboard />
           </ProtectedRoute>
         } 
       />

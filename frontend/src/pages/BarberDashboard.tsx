@@ -4,7 +4,7 @@ import { Services } from '../components/barber/Services';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-export default function BarberPanel() {
+export default function BarberDashboard() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'hours' | 'services'>('hours');
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +55,7 @@ export default function BarberPanel() {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">{t('barberPanel')}</h1>
+        <h1 className="text-2xl font-bold mb-6">{t('barberDashboard')}</h1>
         
         {/* Tabs */}
         <div className="flex space-x-4 mb-6">

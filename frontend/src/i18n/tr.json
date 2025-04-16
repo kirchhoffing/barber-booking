@@ -21,7 +21,7 @@
   "passwordsDontMatch": "Şifreler uyuşmuyor",
   "errorOccurred": "Bir hata oluştu",
   "registerAsBarber": "Berber olarak kayıt ol",
-  "barberPanel": "Berber Paneli",
+  "barberDashboard": "Berber Paneli",
   "workingHours": "Çalışma Saatleri",
   "services": "Hizmetler",
   "adminPanel": "Admin Paneli",
@@ -29,5 +29,9 @@
   "role": "Rol",
   "actions": "İşlemler",
   "errorLoadingUsers": "Kullanıcılar yüklenirken bir hata oluştu",
-  "errorUpdatingRole": "Rol güncellenirken bir hata oluştu"
+  "errorUpdatingRole": "Rol güncellenirken bir hata oluştu",
+  "noAccount": "Hesabınız yok mu?",
+  "registerNow": "Hemen kayıt olun!",
+  "haveAccount": "Zaten hesabınız var mı?",
+  "loginNow": "Hemen giriş yapın!"
 } 
