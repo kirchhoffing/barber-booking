@@ -23,6 +23,12 @@ jobs:
           cd frontend && npm ci
           cd ../backend && npm ci
 
+      - name: Check files in frontend
+        run: |
+          cd frontend
+          ls -la
+          cat package.json
+
       - name: Run frontend tests
         run: |
           cd frontend
