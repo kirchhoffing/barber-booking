@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
 
 interface Service {
   name: string;
@@ -20,7 +19,6 @@ interface TimeSlot {
 }
 
 const BarberDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [selectedService, setSelectedService] = useState<string>('');
 

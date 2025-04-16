@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getAllUsers, deleteUser } from '../api/adminApi';
-import { User } from '../types';
 
 const AdminDashboard = () => {
   const queryClient = useQueryClient();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { WorkingHours } from '../components/barber/WorkingHours';
 import { Services } from '../components/barber/Services';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 export default function BarberDashboard() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'hours' | 'services'>('hours');
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,16 +40,6 @@ export default function BarberDashboard() {
     { id: 'hours', label: t('workingHours') },
     { id: 'services', label: t('services') }
   ] as const;
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-        <div className="bg-red-500 text-white p-4 rounded-lg">
-          {error}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
