@@ -29,15 +29,21 @@ jobs:
           ls -la
           cat package.json
 
+      - name: Check files in backend
+        run: |
+          cd backend
+          ls -la
+          cat package.json
+
       - name: Run frontend tests
         run: |
           cd frontend
-          npm run testx
+          npm run ci-test
 
       - name: Run backend tests
         run: |
           cd backend
-          npm run test
+          npm run ci-test
 
       - name: Build frontend
         run: |
