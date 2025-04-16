@@ -1,29 +1,47 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+!.env.example
+
 # Dependencies
-node_modules
-.pnp
-.pnp.js
+node_modules/
+dist/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Testing
 coverage
 
 # Production
-build
-dist
 dist-ssr
 *.local
 
 # Misc
-.DS_Store
-.env
-.env.local
 .env.development.local
 .env.test.local
 .env.production.local
-.env*.local
 
 # Logs
-logs
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
