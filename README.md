@@ -144,6 +144,97 @@ barber-booking/
 - 🔒 Secure Password Handling
 - 📈 Real-time Availability Checking
 
+## 🚀 Deployment & DevOps
+
+### Docker Support
+- Containerized frontend and backend applications
+- Production-ready Docker Compose configuration
+- SSL certificate generation script
+- Nginx reverse proxy configuration
+
+### CI/CD Pipeline
+- GitHub Actions workflow for automated testing and deployment
+- Automated build and deployment process
+- Environment-specific configurations
+- Production deployment automation
+
+## 🔒 Security Features
+- SSL/TLS encryption
+- Secure password hashing
+- JWT token-based authentication
+- Role-based access control (RBAC)
+- Input validation and sanitization
+- CORS protection
+- Rate limiting
+- Environment variable management
+
+## 📊 Database Schema
+- User management (customers, barbers, admins)
+- Appointment scheduling
+- Service catalog
+- Working hours management
+- Reviews and ratings
+- Payment tracking
+- Notification system
+
+## 🛠 Development Tools
+- ESLint for code linting
+- Prettier for code formatting
+- TypeScript for type safety
+- Jest for testing
+- Prisma for database management
+- Docker for containerization
+- GitHub Actions for CI/CD
+
+## 📱 Frontend Features
+- Responsive design for all devices
+- Dark/Light mode support
+- Real-time appointment updates
+- Interactive calendar
+- Form validation
+- Toast notifications
+- Loading states
+- Error handling
+- Image upload support
+- Multi-language support (i18n)
+
+## 🔧 Backend Features
+- RESTful API design
+- Error handling middleware
+- Request validation
+- File upload handling
+- Email notifications
+- Database migrations
+- Seeding scripts
+- API documentation
+- Rate limiting
+- Caching support
+
+## 📦 Dependencies
+### Frontend
+- React 18
+- Vite
+- Tailwind CSS
+- React Query
+- React Router
+- React Hook Form
+- Zod
+- Headless UI
+- Heroicons
+- i18next
+
+### Backend
+- Express.js
+- Prisma
+- PostgreSQL
+- JWT
+- Zod
+- Jest
+- Nodemailer
+- Multer
+- Rate Limiter
+- CORS
+
 ## 🤝 Contributing
 
 1. Fork the repository
