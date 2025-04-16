@@ -9,6 +9,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
+    "test": "npm run ci-test",
     "ci-test": "echo \"No tests specified\" && exit 0"
   },
   "keywords": [],
